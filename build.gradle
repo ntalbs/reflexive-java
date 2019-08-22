@@ -13,6 +13,7 @@ repositories {
 ext {
   vertxVersion = '3.8.0'
   guiceVersion = '4.2.2'
+  immutablesVersion = '2.7.5'
   junitJupiterEngineVersion = '5.5.1'
 }
 
@@ -25,6 +26,9 @@ sourceCompatibility = '11'
 dependencies {
   implementation "io.vertx:vertx-core:$vertxVersion"
   implementation "com.google.inject:guice:$guiceVersion"
+  implementation "org.immutables:value:$immutablesVersion"
+
+  annotationProcessor "org.immutables:value:$immutablesVersion"
 
   testImplementation "io.vertx:vertx-junit5:$vertxVersion"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterEngineVersion"
