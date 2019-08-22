@@ -4,6 +4,7 @@ import static com.google.inject.Guice.createInjector;
 
 import com.google.inject.Injector;
 import io.vertx.core.Vertx;
+import ntalbs.velociraptor.echo.EchoVerticle;
 
 public class VelociraptorMain {
 

@@ -1,4 +1,4 @@
-package ntalbs.velociraptor;
+package ntalbs.velociraptor.echo;
 
 import com.google.inject.Inject;
 import io.vertx.core.AbstractVerticle;

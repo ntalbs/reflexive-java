@@ -1,4 +1,4 @@
-package ntalbs.velociraptor;
+package ntalbs.velociraptor.echo;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;

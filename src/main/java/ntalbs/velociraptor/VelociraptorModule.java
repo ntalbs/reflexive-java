@@ -7,6 +7,7 @@ import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerRequest;
+import ntalbs.velociraptor.echo.EchoHandler;
 
 public class VelociraptorModule extends AbstractModule {
 
