@@ -2,8 +2,6 @@
 
 image:https://img.shields.io/badge/vert.x-3.8.0-purple.svg[link="https://vertx.io"]
 
-This application was generated using http://start.vertx.io
-
 == Building
 
 To launch your tests:
