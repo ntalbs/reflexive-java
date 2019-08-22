@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpServerRequest;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,35 +25,33 @@ public class EchoHandler implements Handler<HttpServerRequest> {
     this.objectMapper = objectMapper;
   }
 
+  private Map<String, List<String>> convert(MultiMap src) {
+    return src.entries().stream()
+      .collect(groupingBy(
+        Map.Entry::getKey,
+        LinkedHashMap::new,
+        mapping(Map.Entry::getValue, toList())
+      ));
+  }
+
   @Override
   public void handle(HttpServerRequest req) {
-    Map<String, List<String>> headers = req.headers().entries().stream()
-      .collect(groupingBy(
-        Map.Entry::getKey,
-        LinkedHashMap::new,
-        mapping(Map.Entry::getValue, toList())
-      ));
-    Map<String, List<String>> params = req.params().entries().stream()
-      .collect(groupingBy(
-        Map.Entry::getKey,
-        LinkedHashMap::new,
-        mapping(Map.Entry::getValue, toList())
-      ));
+    req.bodyHandler(buf -> {
+      EchoResponse response = ImmutableEchoResponse.builder()
+        .method(req.method().name())
+        .path(req.path())
+        .headers(convert(req.headers()))
+        .params(convert(req.params()))
+        .body(buf.toString())
+        .build();
 
-    EchoResponse response = ImmutableEchoResponse.builder()
-      .method(req.method().name())
-      .path(req.path())
-      .headers(headers)
-      .params(params)
-      .body("Need to be set...")
-      .build();
-
-    try {
-      req.response()
-        .putHeader("content-type", "application/json")
-        .end(objectMapper.writeValueAsString(response));
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
+      try {
+        req.response()
+          .putHeader("content-type", "application/json")
+          .end(objectMapper.writeValueAsString(response));
+      } catch (JsonProcessingException e) {
+        e.printStackTrace();
+      }
+    });
   }
 }
