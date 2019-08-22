@@ -18,11 +18,11 @@ import java.util.Map;
 @Singleton
 public class EchoHandler implements Handler<HttpServerRequest> {
 
-  private final ObjectMapper objectMapper;
+  private final ObjectMapper mapper;
 
   @Inject
-  public EchoHandler(ObjectMapper objectMapper) {
-    this.objectMapper = objectMapper;
+  public EchoHandler(ObjectMapper mapper) {
+    this.mapper = mapper;
   }
 
   private Map<String, List<String>> convert(MultiMap src) {
@@ -48,7 +48,7 @@ public class EchoHandler implements Handler<HttpServerRequest> {
       try {
         req.response()
           .putHeader("content-type", "application/json")
-          .end(objectMapper.writeValueAsString(response));
+          .end(mapper.writeValueAsString(response));
       } catch (JsonProcessingException e) {
         req.response().reset();
         req.response().setStatusCode(500).end();
