@@ -50,7 +50,8 @@ public class EchoHandler implements Handler<HttpServerRequest> {
           .putHeader("content-type", "application/json")
           .end(objectMapper.writeValueAsString(response));
       } catch (JsonProcessingException e) {
-        e.printStackTrace();
+        req.response().reset();
+        req.response().setStatusCode(500).end();
       }
     });
   }
