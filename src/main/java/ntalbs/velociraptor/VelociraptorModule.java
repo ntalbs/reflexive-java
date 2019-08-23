@@ -9,7 +9,8 @@ import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerRequest;
 import ntalbs.velociraptor.echo.EchoHandler;
 
-public class VelociraptorModule extends AbstractModule {
+@SuppressWarnings("unused")
+class VelociraptorModule extends AbstractModule {
 
   @Override
   protected void configure() {

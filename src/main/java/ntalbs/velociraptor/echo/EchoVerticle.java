@@ -11,7 +11,7 @@ import javax.inject.Singleton;
 public class EchoVerticle extends AbstractVerticle {
 
   private static final int PORT = 8080;
-  private Handler<HttpServerRequest> echoHandler;
+  private final Handler<HttpServerRequest> echoHandler;
 
   @Inject
   public EchoVerticle(Handler<HttpServerRequest> echoHandler) {
