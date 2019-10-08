@@ -11,7 +11,7 @@ repositories {
 }
 
 ext {
-  vertxVersion = '3.8.0'
+  vertxVersion = '3.8.2'
   guiceVersion = '4.2.2'
   immutablesVersion = '2.7.5'
   junitJupiterEngineVersion = '5.5.1'
