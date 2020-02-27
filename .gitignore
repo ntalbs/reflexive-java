@@ -5,3 +5,4 @@ gradlew*
 .vertx/
 .idea/
 /out/
+build
