@@ -4,6 +4,9 @@ files:
   - source: build/distributions/velociraptor-0.0.1.zip
     destination: /var/velociraptor
 hooks:
+  AfterInstall:
+    - location: scripts/postinstall.sh
+      timeout: 180
   ApplicationStart:
     - location: /var/velociraptor/velociraptor-0.0.1/bin/velociraptor
       timeout: 300
