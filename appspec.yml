@@ -1,0 +1,14 @@
+version: 0.0
+os: linux
+files:
+  - source: build/distributions/velociraptor*.zip
+    destination: /var/velociraptor
+hooks:
+  ApplicationStart:
+    - location: /var/velociraptor/velociraptor-0.0.1/bin/velociraptor
+      timeout: 300
+      runas: root
+  ApplicationStop:
+    - location: scripts/stop_server.sh
+      timeout: 300
+      runas: root
