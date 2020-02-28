@@ -8,7 +8,7 @@ hooks:
     - location: scripts/postinstall.sh
       timeout: 180
   ApplicationStart:
-    - location: /var/velociraptor/velociraptor-0.0.1/bin/velociraptor
+    - location: scripts/start_server.sh
       timeout: 300
       runas: root
   ApplicationStop:
