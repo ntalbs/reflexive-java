@@ -14,10 +14,13 @@ import io.vertx.core.http.HttpServerRequest;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Singleton
 public class EchoHandler implements Handler<HttpServerRequest> {
 
+  private static final Logger logger = LogManager.getLogger(EchoHandler.class);
   private final ObjectMapper mapper;
 
   @Inject
@@ -49,9 +52,12 @@ public class EchoHandler implements Handler<HttpServerRequest> {
         req.response()
           .putHeader("content-type", "application/json")
           .end(mapper.writeValueAsString(response));
+        logger.info("HTTP 200: {} {}?{}", req.method(), req.path(), req.query());
       } catch (JsonProcessingException e) {
         req.response().reset();
         req.response().setStatusCode(500).end();
+        logger.info("HTTP 500: {} {}", req.method(), req.path());
+        logger.info("Exception thrown while handling request.", e);
       }
     });
   }
