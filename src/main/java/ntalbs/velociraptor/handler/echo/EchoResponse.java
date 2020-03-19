@@ -1,4 +1,4 @@
-package ntalbs.velociraptor.echo;
+package ntalbs.velociraptor.handler.echo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;

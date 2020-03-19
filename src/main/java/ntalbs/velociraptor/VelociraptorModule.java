@@ -7,7 +7,7 @@ import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import io.vertx.core.Handler;
 import io.vertx.ext.web.RoutingContext;
-import ntalbs.velociraptor.echo.EchoHandler;
+import ntalbs.velociraptor.handler.echo.EchoHandler;
 
 @SuppressWarnings("unused")
 class VelociraptorModule extends AbstractModule {
