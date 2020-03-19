@@ -4,13 +4,12 @@ import static com.google.inject.Guice.createInjector;
 
 import com.google.inject.Injector;
 import io.vertx.core.Vertx;
-import ntalbs.velociraptor.echo.EchoVerticle;
 
 class VelociraptorMain {
 
   public static void main(String[] args) {
     Vertx vertx = Vertx.vertx();
     Injector injector = createInjector(new VelociraptorModule());
-    vertx.deployVerticle(injector.getInstance(EchoVerticle.class));
+    vertx.deployVerticle(injector.getInstance(VelociraptorVerticle.class));
   }
 }

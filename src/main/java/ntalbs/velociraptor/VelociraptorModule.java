@@ -6,7 +6,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import io.vertx.core.Handler;
-import io.vertx.core.http.HttpServerRequest;
+import io.vertx.ext.web.RoutingContext;
 import ntalbs.velociraptor.echo.EchoHandler;
 
 @SuppressWarnings("unused")
@@ -14,7 +14,7 @@ class VelociraptorModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(new TypeLiteral<Handler<HttpServerRequest>>(){}).to(EchoHandler.class);
+    bind(new TypeLiteral<Handler<RoutingContext>>(){}).to(EchoHandler.class);
   }
 
   @Provides

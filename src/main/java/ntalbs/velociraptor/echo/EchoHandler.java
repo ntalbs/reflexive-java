@@ -1,9 +1,5 @@
 package ntalbs.velociraptor.echo;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
@@ -11,14 +7,19 @@ import com.google.inject.Singleton;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpServerRequest;
+import io.vertx.ext.web.RoutingContext;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
+
 @Singleton
-public class EchoHandler implements Handler<HttpServerRequest> {
+public class EchoHandler implements Handler<RoutingContext> {
 
   private static final Logger logger = LogManager.getLogger(EchoHandler.class);
   private final ObjectMapper mapper;
@@ -38,7 +39,8 @@ public class EchoHandler implements Handler<HttpServerRequest> {
   }
 
   @Override
-  public void handle(HttpServerRequest req) {
+  public void handle(RoutingContext routingContext) {
+    HttpServerRequest req = routingContext.request();
     req.bodyHandler(buf -> {
       EchoResponse response = ImmutableEchoResponse.builder()
         .method(req.method().name())
