@@ -5,19 +5,25 @@ image:https://img.shields.io/badge/vert.x-3.8.0-purple.svg[link="https://vertx.i
 == Building
 
 To launch your tests:
-```
+
+[source]
+----
 ./gradlew clean test
-```
+----
 
 To package your application:
-```
+
+[source]
+----
 ./gradlew clean assemble
-```
+----
 
 To run your application:
-```
+
+[source]
+----
 ./gradlew clean run
-```
+----
 
 == Help
 
