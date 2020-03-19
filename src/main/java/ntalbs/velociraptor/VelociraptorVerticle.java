@@ -2,36 +2,35 @@ package ntalbs.velociraptor;
 
 import com.google.inject.Inject;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.ext.web.Router;
-import io.vertx.ext.web.RoutingContext;
 import javax.inject.Singleton;
+import ntalbs.velociraptor.handler.base.DefaultHandler;
+import ntalbs.velociraptor.handler.echo.EchoHandler;
+import ntalbs.velociraptor.handler.proxy.ProxyHandler;
 
 @Singleton
 public class VelociraptorVerticle extends AbstractVerticle {
 
   private static final int PORT = 8080;
-  private final Handler<RoutingContext> echoHandler;
+  private final EchoHandler echoHandler;
+  private final ProxyHandler proxyHandler;
+  private final DefaultHandler defaultHandler;
 
   @Inject
-  public VelociraptorVerticle(Handler<RoutingContext> echoHandler) {
+  public VelociraptorVerticle(EchoHandler echoHandler, ProxyHandler proxyHandler, DefaultHandler defaultHandler) {
     this.echoHandler = echoHandler;
+    this.defaultHandler = defaultHandler;
+    this.proxyHandler = proxyHandler;
   }
 
   @Override
   public void start(Promise<Void> startPromise) {
     Router router = Router.router(vertx);
-    router.route("/*").handler(rc -> {
-      rc.response()
-        .putHeader("content-type", "application/json");
-      rc.next();
-    });
+
     router.route("/echo").handler(echoHandler);
-    router.route("/*").handler(rc -> rc.response()
-        .setStatusCode(404)
-        .end("{ status: 404, path: \"" + rc.request().path()+ "\" }")
-    );
+    router.route("/proxy/*").handler(proxyHandler);
+    router.route("/*").handler(defaultHandler);
 
     vertx.createHttpServer()
       .requestHandler(router)
