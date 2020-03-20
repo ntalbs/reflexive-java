@@ -1,6 +1,5 @@
 package ntalbs.velociraptor;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.Vertx;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
@@ -16,9 +15,8 @@ class VelociraptorVerticleTest {
 
   @BeforeEach
   void deploy_verticle(Vertx vertx, VertxTestContext testContext) {
-    ObjectMapper mapper = new ObjectMapper();
     vertx.deployVerticle(
-      new VelociraptorVerticle(new EchoHandler(mapper), new ProxyHandler(), new DefaultHandler(mapper)),
+      new VelociraptorVerticle(new EchoHandler(), new ProxyHandler(), new DefaultHandler()),
       testContext.succeeding(id -> testContext.completeNow())
     );
   }

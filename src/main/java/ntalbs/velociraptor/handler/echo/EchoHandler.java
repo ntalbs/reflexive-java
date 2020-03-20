@@ -1,12 +1,10 @@
 package ntalbs.velociraptor.handler.echo;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,12 +20,6 @@ import static java.util.stream.Collectors.toList;
 public class EchoHandler implements Handler<RoutingContext> {
 
   private static final Logger logger = LogManager.getLogger(EchoHandler.class);
-  private final ObjectMapper mapper;
-
-  @Inject
-  public EchoHandler(ObjectMapper mapper) {
-    this.mapper = mapper;
-  }
 
   private Map<String, List<String>> convert(MultiMap src) {
     return src.entries().stream()
@@ -50,17 +42,10 @@ public class EchoHandler implements Handler<RoutingContext> {
         .body(buf.toString())
         .build();
 
-      try {
-        req.response()
-          .putHeader("content-type", "application/json")
-          .end(mapper.writeValueAsString(response));
-        logger.info("HTTP 200: {} {}?{}", req.method(), req.path(), req.query());
-      } catch (JsonProcessingException e) {
-        req.response().reset();
-        req.response().setStatusCode(500).end();
-        logger.info("HTTP 500: {} {}", req.method(), req.path());
-        logger.info("Exception thrown while handling request.", e);
-      }
+      req.response()
+        .putHeader("content-type", "application/json")
+        .end(JsonObject.mapFrom(response).toBuffer());
+      logger.info("HTTP 200: {} {}?{}", req.method(), req.path(), req.query());
     });
   }
 }
