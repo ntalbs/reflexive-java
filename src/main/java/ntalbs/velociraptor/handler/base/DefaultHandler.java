@@ -42,5 +42,6 @@ public class DefaultHandler implements Handler<RoutingContext> {
       logger.info("HTTP 500: {} {}", req.method(), req.path());
       logger.info("Exception thrown while handling request.", e);
     }
+      .setStatusCode(404)
   }
 }
