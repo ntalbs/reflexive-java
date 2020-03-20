@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
 cd /var/velociraptor
-sudo jar -xf velociraptor-0.0.1.zip
-cd velociraptor-0.0.1/bin
-sudo chmod u+x velociraptor
+sudo jar -xf Velociraptor-0.0.1.zip
+cd Velociraptor-0.0.1/bin
+sudo chmod u+x Velociraptor

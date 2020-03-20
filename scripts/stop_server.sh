@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-PID=$(cat /var/velociraptor/velociraptor.pid)
+PID=$(cat /var/velociraptor/Velociraptor.pid)
 
 if kill -9 $PID > /dev/null 2> /dev/null; then
     echo "The service process ${PID} is killed."
