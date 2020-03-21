@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-cd /var/velociraptor/Velociraptor-0.0.1
+cd /var/Velociraptor
 ./bin/Velociraptor > /dev/null 2> /dev/null < /dev/null &
 
-echo $! > /var/velociraptor/Velociraptor.pid
-echo "server started"
+echo $! > /var/Velociraptor/Velociraptor.pid
+echo "Server started"

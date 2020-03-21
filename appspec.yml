@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: build/distributions/Velociraptor-0.0.1.zip
-    destination: /var/velociraptor
+    destination: /var
 hooks:
   AfterInstall:
     - location: scripts/postinstall.sh
