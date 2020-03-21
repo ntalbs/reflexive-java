@@ -41,11 +41,12 @@ public class VelociraptorVerticle extends AbstractVerticle {
   }
 
   private void handlePing(RoutingContext rc) {
-    rc.response().setStatusCode(200).end("Succeed");
+    rc.response().setStatusCode(200).end("Pong!");
+    logger.info("HTTP 200: Pong");
   }
 
   private void handleEcho(RoutingContext routingContext) {
-    HttpServerRequest req = routingContext.request();
+    var req = routingContext.request();
     req.bodyHandler(buf -> {
       EchoResponse response = ImmutableEchoResponse.builder()
         .method(req.method().name())
@@ -63,11 +64,11 @@ public class VelociraptorVerticle extends AbstractVerticle {
   }
 
   private void handleProxy(RoutingContext routingContext) {
-    HttpServerRequest req = routingContext.request();
-    String inPath = req.path().replace("proxy", "cdp");
-    String query = req.query();
+    var req = routingContext.request();
+    var inPath = req.path().replace("proxy", "cdp");
+    var query = req.query();
 
-    String targetUri = TARGET_ENDPOINT + inPath + "?" + query;
+    var targetUri = TARGET_ENDPOINT + inPath + "?" + query;
     logger.info("Delegate request -> target URI: " + targetUri);
     webClient.getAbs(targetUri)
       .ssl(true)
@@ -88,9 +89,9 @@ public class VelociraptorVerticle extends AbstractVerticle {
   }
 
   private void handleNotFound(RoutingContext routingContext) {
-    HttpServerRequest req = routingContext.request();
+    var req = routingContext.request();
 
-    ErrorResponse response = ImmutableErrorResponse.builder()
+    var response = ImmutableErrorResponse.builder()
       .method(req.method().name())
       .path(req.path())
       .status(404)
@@ -106,7 +107,7 @@ public class VelociraptorVerticle extends AbstractVerticle {
 
   @Override
   public void start(Promise<Void> startPromise) {
-    Router router = Router.router(vertx);
+    var router = Router.router(vertx);
 
     router.route("/ping").handler(this::handlePing);
     router.route("/echo*").handler(this::handleEcho);
