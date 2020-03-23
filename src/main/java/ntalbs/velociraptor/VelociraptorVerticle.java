@@ -66,7 +66,6 @@ public class VelociraptorVerticle extends AbstractVerticle {
     var query = req.query();
 
     var targetUri = TARGET_ENDPOINT + inPath + "?" + query;
-    logger.info("Delegate request -> target URI: " + targetUri);
     webClient.getAbs(targetUri)
       .ssl(true)
       .timeout(1000)
@@ -76,12 +75,12 @@ public class VelociraptorVerticle extends AbstractVerticle {
           req.response()
             .setStatusCode(ar.result().statusCode())
             .end(response.body());
-          logger.info("Delegate request succeeded.");
+          logger.info("HTTP {}: {} {}?{}", ar.result().statusCode(), req.method(), req.path(), req.query());
         } else {
-          logger.info("Delegate request failed.");
           req.response()
-            .setStatusCode(ar.result().statusCode())
+            .setStatusCode(502)
             .end("Delegate request failed");
+          logger.info("Failed to forward request: {} {}?{}, Cause: {}", req.method(), req.path(), req.query(), ar.cause());
         }
       });
   }
