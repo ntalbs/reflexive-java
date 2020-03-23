@@ -74,6 +74,7 @@ public class VelociraptorVerticle extends AbstractVerticle {
         if (ar.succeeded()) {
           HttpResponse<Buffer> response = ar.result();
           req.response()
+            .setStatusCode(ar.result().statusCode())
             .end(response.body());
           logger.info("Delegate request succeeded.");
         } else {
