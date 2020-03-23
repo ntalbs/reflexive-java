@@ -12,7 +12,6 @@ repositories {
 
 ext {
   vertxVersion = '3.8.5'
-  guiceVersion = '4.2.2'
   immutablesVersion = '2.8.2'
   junitJupiterEngineVersion = '5.6.0'
   log4jVersion = '2.13.1'
@@ -28,7 +27,6 @@ dependencies {
   annotationProcessor "org.immutables:value:$immutablesVersion"
 
   implementation "org.immutables:value:$immutablesVersion"
-  implementation "com.google.inject:guice:$guiceVersion"
   implementation "io.vertx:vertx-core:$vertxVersion"
   implementation "io.vertx:vertx-web:$vertxVersion"
   implementation "io.vertx:vertx-web-client:$vertxVersion"

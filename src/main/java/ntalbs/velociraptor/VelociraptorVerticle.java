@@ -13,7 +13,6 @@ import io.vertx.ext.web.client.WebClient;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Singleton;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +20,6 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 
-@Singleton
 public class VelociraptorVerticle extends AbstractVerticle {
 
   private static final int PORT = 8080;
