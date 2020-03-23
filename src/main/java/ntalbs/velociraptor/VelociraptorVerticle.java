@@ -5,7 +5,6 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -40,12 +39,12 @@ public class VelociraptorVerticle extends AbstractVerticle {
       ));
   }
 
-  private void handlePing(RoutingContext rc) {
+  private void ping(RoutingContext rc) {
     rc.response().setStatusCode(200).end("Pong!");
     logger.info("HTTP 200: Pong");
   }
 
-  private void handleEcho(RoutingContext routingContext) {
+  private void echo(RoutingContext routingContext) {
     var req = routingContext.request();
     req.bodyHandler(buf -> {
       EchoResponse response = ImmutableEchoResponse.builder()
@@ -63,7 +62,7 @@ public class VelociraptorVerticle extends AbstractVerticle {
     });
   }
 
-  private void handleProxy(RoutingContext routingContext) {
+  private void forward(RoutingContext routingContext) {
     var req = routingContext.request();
     var inPath = req.path().replace("proxy", "cdp");
     var query = req.query();
@@ -88,7 +87,7 @@ public class VelociraptorVerticle extends AbstractVerticle {
       });
   }
 
-  private void handleNotFound(RoutingContext routingContext) {
+  private void notFound(RoutingContext routingContext) {
     var req = routingContext.request();
 
     var response = ImmutableErrorResponse.builder()
@@ -109,10 +108,10 @@ public class VelociraptorVerticle extends AbstractVerticle {
   public void start(Promise<Void> startPromise) {
     var router = Router.router(vertx);
 
-    router.route("/ping").handler(this::handlePing);
-    router.route("/echo*").handler(this::handleEcho);
-    router.route("/proxy/*").handler(this::handleProxy);
-    router.route("/*").handler(this::handleNotFound);
+    router.route("/ping").handler(this::ping);
+    router.route("/echo*").handler(this::echo);
+    router.route("/proxy/*").handler(this::forward);
+    router.route("/*").handler(this::notFound);
 
     vertx.createHttpServer()
       .requestHandler(router)
