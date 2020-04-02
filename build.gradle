@@ -11,9 +11,9 @@ repositories {
 }
 
 ext {
-  vertxVersion = '3.8.5'
+  vertxVersion = '3.9.0'
   immutablesVersion = '2.8.2'
-  junitJupiterEngineVersion = '5.6.0'
+  junitJupiterEngineVersion = '5.6.1'
   log4jVersion = '2.13.1'
 }
 
