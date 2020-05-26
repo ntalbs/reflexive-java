@@ -1,5 +1,7 @@
 package ntalbs.velociraptor;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Promise;
@@ -26,6 +28,8 @@ public class VelociraptorVerticle extends AbstractVerticle {
   private static final String TARGET_ENDPOINT = "https://atv-ext.amazon.com";
   private static final Logger logger = LogManager.getLogger(VelociraptorVerticle.class);
 
+  private static final XmlMapper xmlMapper = new XmlMapper();
+
   private final WebClient webClient = WebClient.create(Vertx.vertx());
 
   private Map<String, List<String>> convert(MultiMap src) {
@@ -35,6 +39,43 @@ public class VelociraptorVerticle extends AbstractVerticle {
         LinkedHashMap::new,
         mapping(Map.Entry::getValue, toList())
       ));
+  }
+
+  private static String contentType(String format) {
+    switch (format) {
+      case "xml": return "application/xml";
+      default: return "application/json";
+    }
+  }
+
+  private static Buffer toJson(Object response) {
+    return JsonObject.mapFrom(response).toBuffer();
+  }
+
+  private static Buffer toXml(Object response) {
+    try {
+      return Buffer.buffer(
+        xmlMapper.writer()
+          .withRootName("Response")
+          .writeValueAsBytes(response)
+      );
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private static Buffer render(String format, Object response) {
+    switch (format) {
+      case "xml": return toXml(response);
+      default: return toJson(response);
+    }
+  }
+
+  private static String renderError(String format) {
+    switch (format) {
+      case "xml": return "<Response>Error</Response>";
+      default: return "{\"Response\": \"Error\"}";
+    }
   }
 
   private void ping(RoutingContext rc) {
@@ -53,10 +94,20 @@ public class VelociraptorVerticle extends AbstractVerticle {
         .body(buf.toString())
         .build();
 
-      req.response()
-        .putHeader("content-type", "application/json")
-        .end(JsonObject.mapFrom(response).toBuffer());
-      logger.info("HTTP 200: {} {}?{}", req.method(), req.path(), req.query());
+      var format = req.getParam("format");
+      try {
+        var render = render(format, response);
+        req.response()
+          .putHeader("content-type", contentType(format))
+          .end(render);
+        logger.info("HTTP 200: {} {}?{}", req.method(), req.path(), req.query());
+      } catch (Exception e) {
+        req.response()
+          .setStatusCode(500)
+          .putHeader("content-type", contentType(format))
+          .end(renderError(format));
+        logger.error("HTTP 500: {} {}?{}", req.method(), req.path(), req.query());
+      }
     });
   }
 
