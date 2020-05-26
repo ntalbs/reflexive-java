@@ -1,0 +1,17 @@
+# Ping
+GET http://localhost:8080/ping
+
+# Echo (xml)
+GET http://localhost:8080/echo?format=xml
+Accept-charset: UTF-8
+x-vertx-h: 10
+x-vertx-h: 20
+
+# Echo (json)
+GET http://localhost:8080/echo?format=json
+Accept-charset: UTF-8
+x-vertx-h: 10
+x-vertx-h: 20
+
+# Proxy
+GET http://localhost:8080/proxy/usage/GetAppStartupConfig?deviceTypeId=A2FDUYD6UQ1BQ&deviceId=1&firmware=1
