@@ -1,7 +1,5 @@
 package ntalbs.velociraptor;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Promise;
@@ -12,11 +10,12 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
@@ -27,8 +26,6 @@ public class VelociraptorVerticle extends AbstractVerticle {
   private static final int PORT = 8080;
   private static final String TARGET_ENDPOINT = "https://atv-ext.amazon.com";
   private static final Logger logger = LogManager.getLogger(VelociraptorVerticle.class);
-
-  private static final XmlMapper xmlMapper = new XmlMapper();
 
   private final WebClient webClient = WebClient.create(Vertx.vertx());
 
@@ -41,41 +38,14 @@ public class VelociraptorVerticle extends AbstractVerticle {
       ));
   }
 
-  private static String contentType(String format) {
-    switch (format) {
-      case "xml": return "application/xml";
-      default: return "application/json";
-    }
-  }
-
-  private static Buffer toJson(Object response) {
+  private static Buffer render(Object response) {
     return JsonObject.mapFrom(response).toBuffer();
   }
 
-  private static Buffer toXml(Object response) {
-    try {
-      return Buffer.buffer(
-        xmlMapper.writer()
-          .withRootName("Response")
-          .writeValueAsBytes(response)
-      );
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static Buffer render(String format, Object response) {
-    switch (format) {
-      case "xml": return toXml(response);
-      default: return toJson(response);
-    }
-  }
-
-  private static String renderError(String format) {
-    switch (format) {
-      case "xml": return "<Response>Error</Response>";
-      default: return "{\"Response\": \"Error\"}";
-    }
+  private static String renderError() {
+    return new JsonObject()
+      .put("Response", "Error")
+      .encode();
   }
 
   private void ping(RoutingContext rc) {
@@ -94,18 +64,17 @@ public class VelociraptorVerticle extends AbstractVerticle {
         .body(buf.toString())
         .build();
 
-      var format = req.getParam("format");
       try {
-        var render = render(format, response);
+        var render = render(response);
         req.response()
-          .putHeader("content-type", contentType(format))
+          .putHeader("content-type", "application/json")
           .end(render);
         logger.info("HTTP 200: {} {}?{}", req.method(), req.path(), req.query());
       } catch (Exception e) {
         req.response()
           .setStatusCode(500)
-          .putHeader("content-type", contentType(format))
-          .end(renderError(format));
+          .putHeader("content-type", "application/json")
+          .end(renderError());
         logger.error("HTTP 500: {} {}?{}", req.method(), req.path(), req.query());
       }
     });
