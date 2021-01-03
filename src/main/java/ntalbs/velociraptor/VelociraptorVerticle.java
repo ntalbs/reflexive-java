@@ -38,16 +38,6 @@ public class VelociraptorVerticle extends AbstractVerticle {
       ));
   }
 
-  private static Buffer render(Object response) {
-    return JsonObject.mapFrom(response).toBuffer();
-  }
-
-  private static String renderError() {
-    return new JsonObject()
-      .put("Response", "Error")
-      .encode();
-  }
-
   private void ping(RoutingContext rc) {
     rc.response().setStatusCode(200).end("Pong!");
     logger.info("HTTP 200: Pong");
@@ -56,25 +46,26 @@ public class VelociraptorVerticle extends AbstractVerticle {
   private void echo(RoutingContext routingContext) {
     var req = routingContext.request();
     req.bodyHandler(buf -> {
-      EchoResponse response = ImmutableEchoResponse.builder()
-        .method(req.method().name())
-        .path(req.path())
-        .headers(convert(req.headers()))
-        .params(convert(req.params()))
-        .body(buf.toString())
-        .build();
+      var response = new JsonObject()
+        .put("method", req.method().name())
+        .put("path", req.path())
+        .put("headers", convert(req.headers()))
+        .put("params", convert(req.params()))
+        .put("body", buf.toString())
+        .encode();
 
       try {
-        var render = render(response);
         req.response()
           .putHeader("content-type", "application/json")
-          .end(render);
+          .end(response);
         logger.info("HTTP 200: {} {}?{}", req.method(), req.path(), req.query());
       } catch (Exception e) {
         req.response()
           .setStatusCode(500)
           .putHeader("content-type", "application/json")
-          .end(renderError());
+          .end(new JsonObject()
+            .put("Response", "Error")
+            .encode());
         logger.error("HTTP 500: {} {}?{}", req.method(), req.path(), req.query());
       }
     });
@@ -108,17 +99,17 @@ public class VelociraptorVerticle extends AbstractVerticle {
   private void notFound(RoutingContext routingContext) {
     var req = routingContext.request();
 
-    var response = ImmutableErrorResponse.builder()
-      .method(req.method().name())
-      .path(req.path())
-      .status(404)
-      .message("Not found")
-      .build();
+    var response = new JsonObject()
+      .put("method", req.method().name())
+      .put("path", req.path())
+      .put("status", 404)
+      .put("message", "Not found")
+      .encode();
 
     req.response()
       .putHeader("content-type", "application/json")
       .setStatusCode(404)
-      .end(JsonObject.mapFrom(response).toBuffer());
+      .end(response);
     logger.info("HTTP 404: {} {}?{}", req.method(), req.path(), req.query());
   }
 

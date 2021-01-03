@@ -1,14 +1,8 @@
 # Ping
 GET http://localhost:8080/ping
 
-# Echo (xml)
-GET http://localhost:8080/echo?format=xml
-Accept-charset: UTF-8
-x-vertx-h: 10
-x-vertx-h: 20
-
 # Echo (json)
-GET http://localhost:8080/echo?format=json
+GET http://localhost:8080/echo?a=10&a=20&b=20
 Accept-charset: UTF-8
 x-vertx-h: 10
 x-vertx-h: 20
