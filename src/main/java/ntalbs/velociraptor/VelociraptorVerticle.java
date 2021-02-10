@@ -1,7 +1,6 @@
 package ntalbs.velociraptor;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.MultiMap;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -10,16 +9,12 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
+import ntalbs.velociraptor.echo.EchoHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
 
 public class VelociraptorVerticle extends AbstractVerticle {
 
@@ -29,46 +24,15 @@ public class VelociraptorVerticle extends AbstractVerticle {
 
   private final WebClient webClient = WebClient.create(Vertx.vertx());
 
-  private Map<String, List<String>> convert(MultiMap src) {
-    return src.entries().stream()
-      .collect(groupingBy(
-        Map.Entry::getKey,
-        LinkedHashMap::new,
-        mapping(Map.Entry::getValue, toList())
-      ));
+  private final EchoHandler echoHandler;
+
+  public VelociraptorVerticle(EchoHandler echoHandler) {
+    this.echoHandler = echoHandler;
   }
 
   private void ping(RoutingContext rc) {
     rc.response().setStatusCode(200).end("Pong!");
     logger.info("HTTP 200: Pong");
-  }
-
-  private void echo(RoutingContext routingContext) {
-    var req = routingContext.request();
-    req.bodyHandler(buf -> {
-      var response = new JsonObject()
-        .put("method", req.method().name())
-        .put("path", req.path())
-        .put("headers", convert(req.headers()))
-        .put("params", convert(req.params()))
-        .put("body", buf.toString())
-        .encode();
-
-      try {
-        req.response()
-          .putHeader("content-type", "application/json")
-          .end(response);
-        logger.info("HTTP 200: {} {}?{}", req.method(), req.path(), req.query());
-      } catch (Exception e) {
-        req.response()
-          .setStatusCode(500)
-          .putHeader("content-type", "application/json")
-          .end(new JsonObject()
-            .put("Response", "Error")
-            .encode());
-        logger.error("HTTP 500: {} {}?{}", req.method(), req.path(), req.query());
-      }
-    });
   }
 
   private void forward(RoutingContext routingContext) {
@@ -118,8 +82,9 @@ public class VelociraptorVerticle extends AbstractVerticle {
     var router = Router.router(vertx);
 
     router.route("/ping").handler(this::ping);
-    router.route("/echo*").handler(this::echo);
+    router.route("/echo*").handler(echoHandler);
     router.route("/proxy/*").handler(this::forward);
+    router.route("/test*").handler(this::test);
     router.route("/*").handler(this::notFound);
 
     vertx.createHttpServer()
@@ -132,5 +97,19 @@ public class VelociraptorVerticle extends AbstractVerticle {
           startPromise.fail(http.cause());
         }
       });
+  }
+
+  private void test(RoutingContext routingContext) {
+    var req = routingContext.request();
+
+    var m = Map.of(
+      "header1", List.of(1,2,3),
+      "header2", "hello"
+    );
+
+    req.response()
+      .putHeader("content-type", "application/json")
+      .setStatusCode(200)
+      .end(new JsonObject().put("headers", m).encode());
   }
 }

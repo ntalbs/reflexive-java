@@ -3,6 +3,7 @@ package ntalbs.velociraptor;
 import io.vertx.core.Vertx;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
+import ntalbs.velociraptor.echo.EchoHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +14,7 @@ class VelociraptorVerticleTest {
   @BeforeEach
   void deploy_verticle(Vertx vertx, VertxTestContext testContext) {
     vertx.deployVerticle(
-      new VelociraptorVerticle(),
+      new VelociraptorVerticle(new EchoHandler()),
       testContext.succeeding(id -> testContext.completeNow())
     );
   }
