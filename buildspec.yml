@@ -1,0 +1,14 @@
+version: 0.2
+
+phase:
+  install:
+    runtime-versions:
+      java: corretto11
+  build:
+    commands:
+      - ./gradlew build
+  artifacts:
+    files:
+      - appspec.yml
+      - build/distributions/*
+      - scripts/*
