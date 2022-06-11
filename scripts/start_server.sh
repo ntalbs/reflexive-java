@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-cd /var/Velociraptor
-./bin/Velociraptor > /dev/null 2> /dev/null < /dev/null &
+cd /var/reflexive-java
+./bin/reflexive-java > /dev/null 2> /dev/null < /dev/null &
 
-echo $! > /var/Velociraptor/Velociraptor.pid
+echo $! > /var/reflexive-java/reflexive-java.pid
 echo "Server started"
