@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 public class ReflexiveVerticle extends AbstractVerticle {
 
-  private static final int PORT = 8080;
+  private static final int PORT = 3000;
   private static final Logger logger = LogManager.getLogger(ReflexiveVerticle.class);
 
   private final EchoHandler echoHandler;
