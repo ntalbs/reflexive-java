@@ -2,6 +2,7 @@ package ntalbs.reflexive;
 
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +29,7 @@ public class EchoHandler implements Handler<RoutingContext> {
         .put("path", req.path())
         .put("headers", convert(req.headers()))
         .put("params", convert(req.params()))
-        .put("body", buf.toString())
+        .put("body", body(buf))
         .encode();
 
       req.response()
@@ -36,6 +37,14 @@ public class EchoHandler implements Handler<RoutingContext> {
         .end(response);
       logger.info("HTTP 200: {} {}?{}", req.method(), req.path(), req.query());
     });
+  }
+
+  private Object body(Buffer buf) {
+    try {
+      return new JsonObject(buf);
+    } catch (Exception x) {
+      return buf.toString();
+    }
   }
 
   private Map<String, ?> convert(MultiMap src) {
