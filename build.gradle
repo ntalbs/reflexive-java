@@ -11,9 +11,9 @@ repositories {
 }
 
 ext {
-  vertxVersion = '4.3.5'
-  junitJupiterEngineVersion = '5.9.1'
-  log4jVersion = '2.19.0'
+  vertxVersion = '4.4.0'
+  junitJupiterEngineVersion = '5.9.2'
+  log4jVersion = '2.20.0'
 }
 
 application {
