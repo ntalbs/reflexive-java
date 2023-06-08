@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: build/distributions/reflexive-java-0.0.1.zip
+  - source: build/distributions/reflexive-java-0.0.1.tar
     destination: /var
 hooks:
   AfterInstall:
