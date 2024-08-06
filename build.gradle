@@ -11,16 +11,16 @@ repositories {
 }
 
 ext {
-  vertxVersion = '4.4.3'
-  junitJupiterEngineVersion = '5.9.2'
-  log4jVersion = '2.20.0'
+  vertxVersion = '4.5.9'
+  junitJupiterEngineVersion = '5.10.3'
+  log4jVersion = '2.23.1'
 }
 
 application {
   mainClass = 'ntalbs.reflexive.ReflexiveMain'
 }
 
-sourceCompatibility = '11'
+sourceCompatibility = '17'
 
 dependencies {
   implementation "io.vertx:vertx-core:$vertxVersion"
