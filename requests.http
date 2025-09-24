@@ -21,6 +21,3 @@ GET http://localhost:8080/test?a=10&a=20&b=20
 Accept-charset: UTF-8
 x-vertx-h: 10
 x-vertx-h: 20
-
-# Proxy
-GET http://localhost:8080/proxy/usage/GetAppStartupConfig?deviceTypeId=A2FDUYD6UQ1BQ&deviceId=1&firmware=1
