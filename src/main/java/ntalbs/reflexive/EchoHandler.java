@@ -35,7 +35,9 @@ public class EchoHandler implements Handler<RoutingContext> {
       req.response()
         .putHeader("content-type", "application/json")
         .end(response);
-      logger.info("HTTP 200: {} {}?{}", req.method(), req.path(), req.query());
+
+      var path_and_query = (req.query()==null) ? req.path() : String.format("%s?%s", req.path(), req.query());
+      logger.info("HTTP 200: {} {}", req.method(), path_and_query);
     });
   }
 
@@ -60,7 +62,7 @@ public class EchoHandler implements Handler<RoutingContext> {
 
   private Object toListOrVal(List<String> list) {
     if (list.size() == 1) {
-      return list.get(0);
+      return list.getFirst();
     } else {
       return list;
     }
